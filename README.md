@@ -17,7 +17,7 @@ For both single file and batch conversion, multiple input files can be entered i
 
 To change the name of the output file, use the `output` flag:
 
-`python3 read.py -i <input file(s)> -o <output file(s)>`
+`python3 reader.py -i <input file(s)> -o <output file(s)>`
 
 or
 
@@ -26,3 +26,9 @@ or
 The `verbose` flag will print out progress to stdout, e.g.:
 
 `python3 reader.py -rv -i <input folder(s)>`
+
+The '-p' flag writes to parquet instead of csv. THIS IS AS YET UNTESTED!!!! 
+Indeed, probably doesn't work.... makes a file, but *not* checked the integrity of it.
+
+Example usage (tested on MacOSX 14.3.1):
+python reader.py -rv -i "/Data/2024_02_23"

@@ -68,6 +68,20 @@ def write_to_csv(listy: list, csv_filename: str, verbose: bool) -> int:
             my_file.write(','.join([str(listy[j][i]) for j in range(num_channels)]) + '\n')
 
     return 1
+    
+import pandas as pd
+
+def write_to_parquet(listy: list, parquet_filename: str, verbose: bool) -> int:
+    num_channels = len(listy)
+
+    # Create a DataFrame from the list data
+    df = pd.DataFrame(listy).T
+    df.columns = [f'Channel {i}' for i in range(num_channels)]
+
+    # Write the DataFrame to a Parquet file
+    df.to_parquet(parquet_filename, index=False)
+
+    return 1
 
 # Argument parsing
 parser = argparse.ArgumentParser()
@@ -80,7 +94,7 @@ parser.add_argument("-r", "--recurrent", help="Targets a folder and converts all
 # I/O arguements
 parser.add_argument("-i", "--input", help="Location of file(s) or folder(s) for conversion. If the recurrent flag is set, this refers to a list of folder paths", nargs='+', default=[sys.stdin], required=True)
 parser.add_argument("-o", "--output", help="Name of output file(s) or folder(s). If left blank, files will be converted with the same name. If the recurrent flag is set, this refers to the name of the output folders", nargs='*')
-
+parser.add_argument("-p", "--parquet", help="creates .parquet instead of csv", action="store_true")
 
 args = parser.parse_args()
 
@@ -92,17 +106,18 @@ if args.output:
 if args.recurrent:
     # Operate on folders
     for folder in args.input:
-        for idx, filename in enumerate(os.listdir(folder)):
-            
+        for filename in os.listdir(folder):
             if len(filename) < 4:
-                logger('Invalid file, skipping...', args.verbose)
+                logger(f'{filename} Invalid, skipping...', args.verbose)
                 continue
-            elif filename[-4:] != '.EDR':
-                logger('Invald file, skipping...', args.verbose)
+            elif filename[-4:].upper() != '.EDR':
+                logger(f'{filename} Invalid, skipping...', args.verbose)
                 continue
             else:
                 # Parse values into list format
-                to_list = read_edr( filename, args.verbose )
+                #Need to use os.path.join(folder, filename) or wont find the file if not root!
+                #to_list = read_edr(filename, args.verbose )clde              
+                to_list = read_edr(os.path.join(folder, filename), args.verbose ) 
                 logger(f'Reading filename: {filename}', args.verbose)
 
                 # Get new folder name
@@ -123,10 +138,13 @@ if args.recurrent:
                     new_filename = f'{folder}/{args.output}/{filename[:-4]}.csv'
 
                 # Write data to file
-                logger('Writing to file...', args.verbose)
-                write_to_csv( to_list, new_filename, args.verbose )
-
-
+                if args.parquet:
+                    new_filename = new_filename.replace(".csv",".parquet")
+                    logger(f'Writing to file: {new_filename}...', args.verbose)
+                    write_to_parquet( to_list, new_filename, args.verbose )
+                else:
+                    logger(f'Writing to file: {new_filename}...', args.verbose)
+                    write_to_csv( to_list, new_filename, args.verbose )
     pass
 else:
     # Operate on files
@@ -142,4 +160,8 @@ else:
             new_filename = args.output[idx]
         
         # Write data to new file
-        write_to_csv( to_list, new_filename, args.verbose )
+            if args.parquet:
+                write_to_parquet( to_list,
+                        new_filename.replace(".csv",".parquet"), args.verbose)
+            else:
+                write_to_csv( to_list, new_filename, args.verbose )
