@@ -84,7 +84,7 @@ def write_to_parquet(listy: list, parquet_filename: str, verbose: bool) -> int:
     # Create a DataFrame from the list data
     df = pd.DataFrame(listy).T
     df.columns = [f'Channel {i}' for i in range(num_channels)]
-
+    df.rename(columns={df.columns[0]: 'Time'}, inplace=True)
     # Write the DataFrame to a Parquet file
     df.to_parquet(parquet_filename, index=False)
 
@@ -96,8 +96,8 @@ root.withdraw()
 
 # Ask the user for the input file
 input_files = filedialog.askopenfilenames(filetypes=[("WinEDR files", "*.edr")],title="Select input file")
-if input_files == None:
-    exit()
+if input_files == "":
+    sys.exit("No Files selected or found")
 
 # Ask the user if they want verbose output
 verbose = messagebox.askyesno("Verbose output", "Do you want verbose output?")
