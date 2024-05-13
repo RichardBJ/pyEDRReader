@@ -83,7 +83,7 @@ def write_to_parquet(listy: list, parquet_filename: str, verbose: bool) -> int:
 
     # Create a DataFrame from the list data
     df = pd.DataFrame(listy).T
-    df.columns = [f'Channel {i}' for i in range(num_channels)]
+    df.columns = [f'Channel {i-1}' for i in range(num_channels)]
     df.rename(columns={df.columns[0]: 'Time'}, inplace=True)
     # Write the DataFrame to a Parquet file
     df.to_parquet(parquet_filename, index=False)
