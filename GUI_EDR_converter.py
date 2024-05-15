@@ -85,15 +85,23 @@ def write_to_csv(listy: list, csv_filename: str, verbose: bool) -> int:
 
 def write_to_parquet(listy: list, parquet_filename: str, verbose: bool) -> int:
     if verbose:
-        print ("Saving to parquet")
+        print ("Preparing to parquet")
     num_channels = len(listy)
 
     # Create a DataFrame from the list data
+    if verbose:
+        print ("Reshaping")
     df = pd.DataFrame(listy).T
+    if verbose:
+        print ("Renaming")
     df.columns = [f'Channel {i-1}' for i in range(num_channels)]
     df.rename(columns={df.columns[0]: 'Time'}, inplace=True)
     # Write the DataFrame to a Parquet file
-    df.to_parquet(parquet_filename, index=False)
+    num_channels = len(listy)
+    if verbose:
+        print ("Writing to parquet")
+    df.to_parquet(parquet_filename, index=False, 
+                  engine="fastparquet")
     if verbose:
         print ("Saving complete")
 
