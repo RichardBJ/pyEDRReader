@@ -32,6 +32,6 @@ from matplotlib import pyplot as plt
 edrDF.loc[20000:25000,:].plot(x="Time", y="Channels")
 edrDF.drop(columns=["Channel 0"], inplace=True)
 
-edrDF.to_parquet("/Users/richardbarrett-jolley/Library/CloudStorage/OneDrive-TheUniversityofLiverpool/Data/WinEDR simulated/TRAINING240513_001[LP=5000Hz RD=1].parquet",
+edrDF.to_parquet("/Users/rbj/Library/CloudStorage/OneDrive-TheUniversityofLiverpool/Data/WinEDR simulated/TRAINING240513_002[lp=2000hz rd=1].parquet",
                  index=False)
 
