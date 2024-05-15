@@ -91,7 +91,9 @@ def write_to_parquet(listy: list, parquet_filename: str, verbose: bool) -> int:
     # Create a DataFrame from the list data
     if verbose:
         print ("Reshaping")
-    df = pd.DataFrame(listy).T
+    la = np.asarray(listy)
+    al = la.T
+    df = pd.DataFrame(al)
     if verbose:
         print ("Renaming")
     df.columns = [f'Channel {i-1}' for i in range(num_channels)]
@@ -100,8 +102,7 @@ def write_to_parquet(listy: list, parquet_filename: str, verbose: bool) -> int:
     num_channels = len(listy)
     if verbose:
         print ("Writing to parquet")
-    df.to_parquet(parquet_filename, index=False, 
-                  engine="fastparquet")
+    df.to_parquet(parquet_filename, index=False)
     if verbose:
         print ("Saving complete")
 
