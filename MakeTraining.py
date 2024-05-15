@@ -73,7 +73,7 @@ if file_paths:
         #create data output filename
         outputname = get_outname(file_path)
         edrDF=read_file(file_path)
-        edrDF["Channels"]= edrDF["Channel 0"]
+        edrDF["Channels"]= edrDF["Noisy Current"]
         print(file_path)
         print(edrDF.info())
         print(edrDF.head())
@@ -134,7 +134,7 @@ edrDF["Channels"] = edrDF["Channels"].astype("int32")
 edrDF["Channels"] = noise_and_channels[:,1] + edrDF["Channels"]
 
 edrDF.loc[10000:15000,:].plot(x="Time", y=["Channels","Noisy Current"])
-edrDF.drop(columns=["Channel 0"], inplace=True)
+#edrDF.drop(columns=["Channel 0"], inplace=True)
 
 edrDF.to_parquet(outputname, index=False)
 
