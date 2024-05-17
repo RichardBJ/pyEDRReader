@@ -10,6 +10,7 @@ The I layer on noise from real data recorded and saved to a Sam format file.
 1) Open the simulated winEDR data
 2) Open the noisy data.  It combines being sure any real channels are retained
 
+Optionally then split with 
 """
 
 import numpy as np
@@ -73,7 +74,10 @@ if file_paths:
         #create data output filename
         outputname = get_outname(file_path)
         edrDF=read_file(file_path)
-        edrDF["Channels"]= edrDF["Noisy Current"]
+        if "Noisy Current" in edrDF.columns:
+            edrDF["Channels"]= edrDF["Noisy Current"]
+        elif "Channel 0" in edrDF.columns:
+            edrDF["Channels"]= edrDF["Channel 0"]
         print(file_path)
         print(edrDF.info())
         print(edrDF.head())
