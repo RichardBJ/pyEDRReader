@@ -22,7 +22,7 @@ from tkinter.filedialog import askopenfilenames
 SI = 50e-6
 # TODO: Display that and check!!
 """DANGER HERE WILL SCREW UP PROPER IF WRONG"""
-UnitaryAmp = 1.0
+UnitaryAmp = 2.0
 
 def get_outname(file_path:str) -> str:
     if file_path.endswith('.csv'):
@@ -65,25 +65,8 @@ root.lift()
 # Open a file dialog for CSV or Parquet files
 file_paths = askopenfilenames(filetypes=[("CSV files", "*.csv"), ("Parquet files", "*.parquet"),("txt files", "*.txt")])
 # Convert all file paths to lower case
-file_paths = [fp.lower() for fp in file_paths]
+file_pathsEDR = [fp.lower() for fp in file_paths]
 
-# Check if files were selected
-# Choose the continuous WinEDR simulated events file
-if file_paths:
-    for file_path in file_paths:
-        #create data output filename
-        outputname = get_outname(file_path)
-        edrDF=read_file(file_path)
-        if "Noisy Current" in edrDF.columns:
-            edrDF["Channels"]= edrDF["Noisy Current"]
-        elif "Channel 0" in edrDF.columns:
-            edrDF["Channels"]= edrDF["Channel 0"]
-        print(file_path)
-        print(edrDF.info())
-        print(edrDF.head())
-        
-else:
-    print("No events file selected.")
 # Quit the Tkinter event loop
 root.quit()
 # Destroy the Tkinter window
@@ -100,12 +83,32 @@ root.lift()
 # Open a file dialog for CSV or Parquet files
 file_paths = askopenfilenames(filetypes=[("CSV files", "*.csv"), ("Parquet files", "*.parquet"),("txt files", "*.txt")])
 # Convert all file paths to lower case
-file_paths = [fp.lower() for fp in file_paths]
+file_pathsNOISE = [fp.lower() for fp in file_paths]
+
 
 # Check if files were selected
 # Choose the continuous WinEDR simulated events file
-if file_paths:
-    for file_path in file_paths:
+print("Read the EDR file")
+if file_pathsEDR:
+    for file_path in file_pathsEDR:
+        #create data output filename
+        outputname = get_outname(file_path)
+        edrDF=read_file(file_path)
+        if "Noisy Current" in edrDF.columns:
+            edrDF["Channels"]= edrDF["Noisy Current"]
+        elif "Channel 0" in edrDF.columns:
+            edrDF["Channels"]= edrDF["Channel 0"]
+        print(file_path)
+        print(edrDF.info())
+        print(edrDF.head())       
+else:
+    print("No events file selected.")
+
+print("Read the file with real noise (and some channels)")
+# Check if files were selected
+# Choose the continuous WinEDR simulated events file
+if file_pathsNOISE:
+    for file_path in file_pathsNOISE:
         df=read_file(file_path)
         #Gltches at the start of Volgate command data... drop 100 points
         df=df.iloc[100:,:]
@@ -113,13 +116,13 @@ if file_paths:
         print(df.info())
         print(df.head())
 
-
 """
 No we gotta make copy after copy of the "raw" data in df until it the exact
 same length as edrDF or longer then crop it.
 In fact times are all wrong lets see what happens"""
 
 """Numpy array"""
+print("Prepare noise file")
 noise_and_channels = df.loc[:,["Noisy Current", "Channels"]].values
 
 while len(noise_and_channels)<len(edrDF):
@@ -129,10 +132,13 @@ noise_and_channels = noise_and_channels[:len(edrDF),:]
 print(f"noise shape {noise_and_channels.shape}")
 
 #Add the noise layer to the existing noisy current
+#Using actual channels amps from the EDR at this stage.
+print("Create the Noisy Channels ('raw') lane")
 edrDF["Noisy Current"] = noise_and_channels[:,0] + edrDF["Channels"]
 
 #Remember the original noisy current still had associated events so don't loose those!
 #BUT winWDR channel size was not necessarily 1.0 :-)
+print("Create the combined Channels lane")
 edrDF["Channels"] = edrDF["Channels"] / UnitaryAmp
 edrDF["Channels"] = edrDF["Channels"].astype("int32")
 edrDF["Channels"] = noise_and_channels[:,1] + edrDF["Channels"]
