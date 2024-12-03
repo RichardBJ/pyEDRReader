@@ -68,7 +68,6 @@ def read_edr(filename: str, verbose: bool) -> list:
         # OK reading pair of bytes by pair of bytes to get each next value in each channel
         while byte:
             try:
-				# 'h' is a signed short integer. Capital H would be unsigned.
                 channels[counter % num_signals].append(struct.unpack('h', byte)[0])
             except:
                 pass
@@ -81,7 +80,7 @@ def read_edr(filename: str, verbose: bool) -> list:
         # Get a clean time column
         timescale = int(DT[0][-3:]) + 1 if 'E' in DT[0] else len(DT[0])
         time = [[round(i * float(DT[0]), timescale) for i in range(len(channels[0]))]]
-        #RBJ 11th March 2024: Small bug at start of some edrs throws everything. This seems to work
+        #RB 11th March 2024: Small bug at start of some edrs throws everything. This seems to work
         for channel in range(num_signals):
             channels[channel][:10]=10*[np.mean(channels[channel][10:1000])]
         if verbose:
