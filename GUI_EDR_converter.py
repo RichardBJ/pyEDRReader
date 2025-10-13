@@ -7,6 +7,9 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 
+"""Script uses tkinter GUI to multiselect files for conversion straight from EDR to pandas 
+parquet or CSV dataframe. I think it writes the header Time Channel0, Channel1 etc...""" 
+
 def logger(message, verbose):
     if verbose:
         print(message)
