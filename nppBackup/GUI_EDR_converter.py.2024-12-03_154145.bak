@@ -7,8 +7,32 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 
-"""Script uses tkinter GUI to multiselect files for conversion straight from EDR to pandas 
-parquet or CSV dataframe. I think it writes the header Time Channel0, Channel1 etc...""" 
+"""
+VER=6.4 <cr><lf> EDR file version number
+NC=2 <cr><lf> No. of analogue input channels 
+NP=102400 <cr><lf> No. of A/D samples in data block
+NBH=2048 <cr><lf> No. of bytes in file header block
+AD=5.0000 <cr> <lf> A/D converter upper limit of voltage range (V)
+ADCMAX=4095 <cr><lf> Maximum A/D sample value
+DT=.1600 <cr><lf> A/D sampling interval (s)
+YN0=Im <cr> <lf> Channel 0 name (n=0 .. NC-1)
+YU0=nA <cr> <lf> Channel 0 units
+YCF0=0.0001 <cr> <lf> Channel 0 calibration factor V/units
+YAG0=10.0 <cr> <lf> Channel 0 gain factor 
+YZ0=1024 <cr> <lf> Channel 0 zero level (A/D bits)
+YO0=0 <cr> <lf> Channel 0 offset into sample group in data block
+YN1=Im <cr> <lf> Channel 1 name (n=0 .. NC-1)
+YU1=nA <cr> <lf> Channel 1 units
+YCF1=0.01 <cr> <lf> Channel 1 calibration factor V/units
+YAG1=1.0 <cr> <lf> Channel 1 gain factor 
+YZ1=1024 <cr> <lf> Channel 1 zero level (A/D bits)
+YO1=1 <cr> <lf> Channel 1 offset into sample group in data block
+TU=ms <cr> <lf> Time units
+ID= Cell 1 <cr> <lf> Experiment identification line
+BAK=T1 <cr> <lf> BAK=T indicates a .BAK file exist
+
+"""
+
 
 def logger(message, verbose):
     if verbose:
