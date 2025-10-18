@@ -7,6 +7,10 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 
+<<<<<<< HEAD
+"""Script uses tkinter GUI to multiselect files for conversion straight from EDR to pandas 
+parquet or CSV dataframe. I think it writes the header Time Channel0, Channel1 etc...""" 
+=======
 """
 VER=6.4 <cr><lf> EDR file version number
 NC=2 <cr><lf> No. of analogue input channels 
@@ -33,6 +37,7 @@ BAK=T1 <cr> <lf> BAK=T indicates a .BAK file exist
 
 """
 
+>>>>>>> 499f1c012fa55b7a6943990f51b760dafd66077c
 
 def logger(message, verbose):
     if verbose:

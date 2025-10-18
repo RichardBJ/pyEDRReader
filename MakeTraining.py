@@ -4,9 +4,9 @@
 Created on Tue Apr 30 17:15:12 2024
 
 @author: richardbarrett-jolley
-this is virtually a custom script for one job
+This is a custom script, virtually, for one job
 simulated NOISY FREE (SLIGHTLY FILTERED) ion channel data produced in winEDR
-The I layer on noise from real data recorded and saved to a Sam format file.
+Then I layer on noise from real data recorded and saved to a Sam format file.
 1) Open the simulated winEDR data
 2) Open the noisy data.  It combines being sure any real channels are retained
 
